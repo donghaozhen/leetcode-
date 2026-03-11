@@ -1,0 +1,19 @@
+class Solution {
+    public int trap(int[] height) {
+        int sum = 0;
+        int left = 1; int right = height.length-2;
+        int rmax = height[height.length-1];
+        int lmax = height[0];
+        while(left<=right){
+            if(lmax<=rmax){
+                sum = sum + Math.max(0,lmax-height[left]);
+                lmax = Math.max(lmax,height[left++]);
+            }
+            else{
+                sum = sum + Math.max(0,rmax-height[right]);
+                rmax = Math.max(rmax,height[right--]);                
+            }
+        }
+        return sum;
+    }
+}
