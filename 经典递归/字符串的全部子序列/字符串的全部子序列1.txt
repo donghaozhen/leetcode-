@@ -1,0 +1,37 @@
+import java.util.*;
+
+
+public class Solution {
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     *
+     * @param s string字符串
+     * @return string字符串一维数组
+     */
+    public String[] generatePermutation (String s) {
+        StringBuilder path = new StringBuilder();
+        char[] chars = s.toCharArray();
+        HashSet<String> set = new HashSet<String>();
+        f1(chars, 0, path, set);
+        String[] result = new String[set.size()];
+        int i = 0;
+        for (String str : set) {
+            result[i++] = str;
+        }
+        return result;
+        // write code here
+    }
+
+    public static void f1(char[] s, int i, StringBuilder path,
+                          HashSet<String> set) {
+        if (i == s.length) {
+            set.add(path.toString());
+        } else {
+            path.append(s[i]);
+            f1(s, i + 1, path, set);
+            path.deleteCharAt(path.length() - 1);
+            f1(s, i + 1, path, set);
+        }
+    }
+}
