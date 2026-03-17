@@ -1,0 +1,24 @@
+class Solution {
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        Arrays.sort(nums);
+        List<Integer> path = new ArrayList<>();
+        HashSet<List<Integer>> set = new HashSet<>();
+        f1(nums, 0, path, set);
+        List<List<Integer>> result = new ArrayList<>();
+        for (List<Integer> str : set) {
+            result.add(str);
+        }
+        return result;
+    }
+
+    public static void f1(int[] nums, int i, List<Integer> path, HashSet<List<Integer>> set) {
+        if (i == nums.length) {
+            set.add(new ArrayList<>(path));
+        } else {
+            path.add(nums[i]);
+            f1(nums, i + 1, path, set);
+            path.remove(path.size() - 1);
+            f1(nums, i + 1, path, set);
+        }
+    }
+}

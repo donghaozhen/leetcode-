@@ -1,0 +1,21 @@
+class Solution {
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        int[] path = new int[nums.length];
+        f1(nums,0,0,path,result);
+        return result;
+    }
+    public void  f1(int[] nums,int i,int size,int[] path,List<List<Integer>> result){
+        if(i == nums.length){
+            List<Integer> cur = new ArrayList<>();
+            for(int j = 0;j<size;j++){
+                cur.add(path[j]);
+            }
+            result.add(cur);
+            return;
+        }
+        path[size] = nums[i];
+        f1(nums,i+1,size+1,path,result);
+        f1(nums,i+1,size,path,result);
+    }
+}

@@ -1,0 +1,30 @@
+class Solution {
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> result = new ArrayList<>();
+        int[] path = new int[nums.length];
+        f1(nums,0,0,path,result);
+        return result;
+
+    }
+    public static void f1(int[] nums, int i,int size,int[] path,List<List<Integer>> result){
+        if(i == nums.length){
+            List<Integer> cur = new ArrayList<>();
+            for(int j = 0;j<size;j++){
+                cur.add(path[j]);
+            }
+            result.add(cur);
+            return;
+        }
+        int j = i+1;
+        while(j<nums.length && nums[j-1] == nums[j]){
+            j++;
+        }
+        f1(nums,j,size,path,result);
+        for(;i<j;i++){
+            path[size++] = nums[i];
+            f1(nums,j,size,path,result);
+        }
+    }
+
+}
