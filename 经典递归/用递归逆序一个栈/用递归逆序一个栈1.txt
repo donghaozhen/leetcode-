@@ -1,0 +1,16 @@
+import java.util.*;
+
+public class ReverseStack {
+    int i = 0;
+    public int[] reverseStackRecursively(int[] stack, int top) {
+        if (top > 0) {
+            int a = stack[top - 1];   
+            i++;                      
+            stack = reverseStackRecursively(stack, top - 1);
+            i--;
+            stack[i] = a;
+        }
+        return stack;
+    }
+
+}
