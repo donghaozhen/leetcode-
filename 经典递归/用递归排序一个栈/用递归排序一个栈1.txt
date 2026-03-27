@@ -1,0 +1,69 @@
+import java.util.*;
+
+// 类名改为可运行的普通类（IDEA中类名需和文件名一致）
+public class PermuteUniqueDemo {
+
+    // 主方法：程序入口，处理输入输出
+    public static void main(String[] args) {
+        Stack<Integer> stack = new Stack() {{
+            push(1);
+            push(5);
+            push(3);
+            push(4);
+            push(5);
+            push(2);
+        }};
+        int deep =deep(stack);
+        while(deep>0){
+            int max = max(stack,deep);
+            int k = times(stack,deep,max);
+            down(stack,deep,max,k);
+            deep -=k;
+        }
+        System.out.println(stack);
+    }
+
+    private static void down(Stack<Integer> stack, int deep, int max, int k) {
+        if(deep==0){
+            while (k>0){
+                stack.push(max);
+                k--;
+            }
+        }
+        int num = stack.pop();
+        down(stack,deep-1,max,k);
+        if(num!=max){
+            stack.push(num);
+        }
+    }
+
+    private static int times(Stack<Integer> stack, int deep, int max) {
+        if(deep==0){
+            return 0;
+        }
+        int num = stack.pop();
+        int value = times(stack,deep-1,max) + num==max ? 1 : 0;
+        stack.push(num);
+        return  value;
+    }
+
+    private static int max(Stack<Integer> stack, int deep) {
+        if(deep==0){
+            return Integer.MAX_VALUE;
+        }
+        int num = stack.pop();
+        int value = max(stack,deep-1);
+        stack.push(num);
+        return Math.max(value,num);
+    }
+
+    public static int deep(Stack<Integer> stack){
+        if(stack.isEmpty()){
+            return 0;
+        }
+        int num = stack.pop();
+        int value = deep(stack);
+        stack.push(num);
+        return value+1;
+    }
+}
