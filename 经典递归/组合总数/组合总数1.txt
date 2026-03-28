@@ -1,0 +1,25 @@
+class Solution {
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> result = new ArrayList();
+        List<Integer> path = new ArrayList();
+        f1(candidates,target,0,result,path);
+        return result;
+    }
+    public void f1(int[] candidates, int target,int i,List<List<Integer>> result,List<Integer> path){
+        if(i==candidates.length || target<0){
+            return;
+        }
+        if(target == 0){
+            result.add(new ArrayList<>(path));
+            return;
+        }
+        for(int j = i;j<candidates.length;j++){
+            if (candidates[j] > target) {
+                continue;
+            }
+            path.add(candidates[j]);
+            f1(candidates,target-candidates[j],j,result,path);
+            path.remove(path.size() - 1);
+        }
+    }
+}
