@@ -1,0 +1,20 @@
+class Solution {
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        List<List<Integer>> result = new ArrayList();
+        List<Integer> path = new ArrayList();
+        f1(n,k,1,result,path);
+        return result;
+    }
+    public void f1(int target, int k, int i,List<List<Integer>> result, List<Integer> path){
+        if(target==0 && path.size()==k){
+            result.add(new ArrayList<>(path));
+            return;
+        }
+        for(int j = i;j<=9;j++){
+            if (j > target) break; 
+            path.add(j);
+            f1(target-j,k,j+1,result,path);
+            path.remove(path.size()-1);
+        }
+    }
+}
