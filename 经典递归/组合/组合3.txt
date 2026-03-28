@@ -1,0 +1,21 @@
+class Solution {
+    public List<List<Integer>> combine(int n, int k) {
+        List<List<Integer>> result = new ArrayList();
+        List<Integer> path = new ArrayList();
+        f1(n,k,1,result,path);
+        return result;
+    }
+
+    public void f1(int n, int k, int i,List<List<Integer>> result, List<Integer> path){
+        if(path.size()==k){
+            result.add(new ArrayList<>(path));
+            return;
+        }
+        while(i<=n){
+            path.add(i);
+            f1(n,k,i+1,result,path);
+            i++;
+            path.remove(path.size()-1);
+        }
+    }
+}
