@@ -1,0 +1,14 @@
+class Solution {
+    public void hanota(List<Integer> A, List<Integer> B, List<Integer> C) {
+        f(A.size(),A,C,B);
+    }
+    public void f(int size,List<Integer> from, List<Integer> to, List<Integer> other){
+        if(size==1){
+            to.add(from.remove(from.size()-1));
+            return;
+        }
+        f(size-1,from, other, to);
+        to.add(from.remove(from.size()-1));
+        f(size-1,other, to, from);
+    }
+}
