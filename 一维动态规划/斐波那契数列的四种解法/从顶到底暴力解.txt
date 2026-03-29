@@ -1,0 +1,15 @@
+class Solution {
+    public int fib(int n) {
+        int[] dp =new int[n+1];
+        return f1(n);
+    }
+    public int f1(int n){
+        if(n==0){
+            return 0;
+        }
+        if(n==1){
+            return 1;
+        }
+        return f1(n-1) + f1(n-2);
+    }
+}
