@@ -1,0 +1,17 @@
+class Solution {
+    public int longestValidParentheses(String s) {
+        char[] chars = s.toCharArray();
+        int[] dp = new int[chars.length];
+        int ans =0;
+        for(int i = 1;i<chars.length;i++){
+            if(chars[i] == ')'){
+                int pre = i - dp[i-1] - 1;
+                if(pre >=0 && chars[pre] == '('){
+                    dp[i] = dp[i-1] + 2 + (pre-1>=0 ? dp[pre-1] :0);
+                }
+            }
+            ans = Math.max(ans,dp[i]);
+        }
+        return ans;
+    }
+}
