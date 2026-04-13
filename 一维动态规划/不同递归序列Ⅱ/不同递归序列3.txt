@@ -1,0 +1,16 @@
+class Solution {
+    public int distinctSubseqII(String s) {
+        int mod = 1000000007;
+        char[] chars = s.toCharArray();
+        int[] nums= new int[26];
+        int all = 1 , add;
+        for(int i = 0 ;i<chars.length;i++){
+            // 修复：+mod 保证结果为正
+            add = (all - nums[chars[i] - 'a'] + mod) % mod;
+            
+            nums[chars[i] - 'a'] = (nums[chars[i] - 'a'] + add) % mod;
+            all = (all + add) % mod;
+        }
+        return (all - 1 + mod) % mod; // 这里也建议加固，防止 all=0
+    }
+}
