@@ -1,0 +1,30 @@
+class Solution {
+    public boolean exist(char[][] board, String word) {
+        char[] words = word.toCharArray();
+        for(int i = 0;i<board.length;i++){
+            for(int j = 0;j<board[0].length;j++){
+                if(f1(board,i,j,words,0)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public boolean f1(char[][] board,int i,int j,char[] words,int k){
+        // 正确终止条件
+        if(k == words.length) return true;
+        if(i<0 || i>=board.length || j<0 || j>=board[0].length){
+            return false;
+        }
+        if(board[i][j] == 0){
+            return false;
+        }
+        if (board[i][j] != words[k]) return false;
+
+        char temp = board[i][j];
+        board[i][j] = 0;
+        boolean ans = f1(board,i-1,j,words,k+1) || f1(board,i+1,j,words,k+1) || f1(board,i,j+1,words,k+1) || f1(board,i,j-1,words,k+1);
+        board[i][j] = temp;
+        return ans;
+    }
+}
