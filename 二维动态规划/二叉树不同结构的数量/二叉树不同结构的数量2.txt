@@ -1,0 +1,48 @@
+import java.util.Scanner;
+
+public class Main {
+    static final int MOD = 1000000007;
+
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        int m = in.nextInt();
+        long[][] dp = new long[n+1][m+1];
+        for(int i = 0;i<=n;i++){
+            for(int j = 0;j<=m;j++){
+                dp[i][j] = -1;
+            }
+        } 
+        System.out.println(dfs(n, m,dp));
+    }
+
+    // 计算：n 个节点，高度不超过 h 的二叉树方案数
+    public static long dfs(int n, int h,long[][] dp) {
+        if(dp[n][h]!=-1){
+            return dp[n][h];
+        }
+        // 边界1：0个节点（空树），只有1种方案
+        if (n == 0) {
+            return 1;
+        }
+        // 边界2：只有1个节点，且高度不小于1，只有1种方案
+        if (n == 1) {
+            return 1;
+        }
+        // 边界3：高度限制为1时，只能有1个节点，否则方案数为0
+        if (h == 1) {
+            return 0;
+        }
+
+        long ans = 0;
+        // 枚举左子树节点数 k，右子树节点数就是 n-1-k
+        for (int k = 0; k < n; k++) {
+            long left = dfs(k, h - 1,dp);      // 左子树方案数
+            long right = dfs(n - 1 - k, h - 1,dp); // 右子树方案数
+            ans = (ans + left * right + MOD) % MOD;
+        }
+        dp[n][h] = ans;
+        return ans;
+    }
+}
