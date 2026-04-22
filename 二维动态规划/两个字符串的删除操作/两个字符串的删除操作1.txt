@@ -1,0 +1,32 @@
+class Solution {
+    public int minDistance(String word1, String word2) {
+        char[] word1Chars= word1.toCharArray();
+        char[] word2Chars= word2.toCharArray();
+        int[][] dp = new int[word1Chars.length][word2Chars.length];
+        for(int i = 0;i<word1Chars.length;i++){
+            for(int j = 0;j<word2Chars.length;j++){
+                dp[i][j] = -1;
+            }
+        }
+        return f1(word1Chars,word2Chars,word1Chars.length-1,word2Chars.length-1,dp);
+    }
+    public int f1(char[] word1Chars,char[] word2Chars,int i,int j,int[][] dp){
+        if(i<0){
+            return j+1;
+        }
+        if(j<0){
+            return i+1;
+        }              
+        if(dp[i][j] != -1){
+            return dp[i][j];
+        }
+        int ans = 0;
+        if(word1Chars[i] == word2Chars[j]){
+            ans += f1(word1Chars,word2Chars,i-1,j-1,dp);
+        }
+        else{
+            ans = ans + 1 + Math.min(f1(word1Chars,word2Chars,i,j-1,dp),f1(word1Chars,word2Chars,i-1,j,dp));
+        }
+        return dp[i][j] = ans;      
+    }
+}
