@@ -1,0 +1,33 @@
+class Solution {
+    public double knightProbability(int n, int k, int row, int column) {
+        double[][][] dp = new double[k + 1][n][n];
+        
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                dp[k][i][j] = 1;
+            }
+        }
+
+        int[][] dirs = {{2,1},{2,-1},{-2,1},{-2,-1},
+                        {1,2},{1,-2},{-1,2},{-1,-2}};
+
+        for (int step = k - 1; step >= 0; step--) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    // 8个方向
+                    double ans = 0;
+                    for (int[] d : dirs) {
+                        int x = i + d[0];
+                        int y = j + d[1];
+                        if(x >= 0 && y >= 0 && x < n && y < n) {
+                            ans += dp[step + 1][x][y] / 8.0;
+                        }
+                    }
+                    dp[step][i][j] = ans;
+                }
+            }
+        }
+
+        return dp[0][row][column];
+    }
+}
