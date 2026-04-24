@@ -1,0 +1,32 @@
+class Solution {
+    int MOD = 1000000007;
+
+    public int numberOfPaths(int[][] grid, int k) {
+        int m = grid.length;
+        int n = grid[0].length;
+
+        long[][][] dp = new long[m][n][k]; 
+
+
+        int firstVal = grid[0][0];
+        dp[0][0][firstVal % k] = 1;
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0 && j == 0) continue; 
+
+                int val = grid[i][j];
+                // 遍历所有可能的余数（对应你的 mod）
+                for (int preMod = 0; preMod < k; preMod++) {
+                    long cnt = 0;
+                    if (i > 0) cnt += dp[i-1][j][preMod]; // 从上面来
+                    if (j > 0) cnt += dp[i][j-1][preMod]; // 从左边来
+                    cnt %= MOD;
+                    int newMod = (preMod + val) % k;
+                    dp[i][j][newMod] = cnt;
+                }
+            }
+        }
+        return (int)(dp[m-1][n-1][0] % MOD);
+    }
+}
