@@ -1,0 +1,28 @@
+class Solution {
+    public int maxSubarraySumCircular(int[] nums) {
+        int n = nums.length;
+        int max = nums[0];   // 最大子段和
+        int min = nums[0];   // 最小子段和
+        int currMax = nums[0];
+        int currMin = nums[0];
+        int total = nums[0]; // 总和
+
+        for (int i = 1; i < n; i++) {
+            // 以i结尾的最大
+            currMax = Math.max(nums[i], currMax + nums[i]);
+            max = Math.max(max, currMax);
+
+            // 以i结尾的最小
+            currMin = Math.min(nums[i], currMin + nums[i]);
+            min = Math.min(min, currMin);
+
+            total += nums[i];
+        }
+
+        // 全是负数 → 直接返回max
+        if (max < 0) return max;
+
+        // 环形答案 = max(普通最大, 总和 - 最小子段)
+        return Math.max(max, total - min);
+    }
+}
