@@ -1,0 +1,61 @@
+class Solution {
+    // 记忆化数组
+    // dp[i][j][len] = s1从i开始，s2从j开始，长度为len，是否是扰乱字符串
+    Boolean[][][] dp;
+
+    public boolean isScramble(String s1, String s2) {
+        int n = s1.length();
+        dp = new Boolean[n][n][n + 1]; 
+        return dfs(s1, s2, 0, 0, n);
+    }
+
+    // 核心递归函数
+    // s1[i...i+len-1] 和 s2[j...j+len-1] 是否是扰乱
+    private boolean dfs(String s1, String s2, int i, int j, int len) {
+        // 记忆化：算过直接返回
+        if (dp[i][j][len] != null) {
+            return dp[i][j][len];
+        }
+
+        // 情况1：两个子串完全相等 → 一定是扰乱
+        if (s1.substring(i, i + len).equals(s2.substring(j, j + len))) {
+            return dp[i][j][len] = true;
+        }
+
+        // 情况2：字符种类/数量不一样 → 绝对不是
+        if (!isSame(s1, s2, i, j, len)) {
+            return dp[i][j][len] = false;
+        }
+
+        // 情况3：枚举分割点
+        for (int k = 1; k < len; k++) {
+            // 不交换：左对左，右对右
+            boolean noSwap = dfs(s1, s2, i, j, k) 
+                           && dfs(s1, s2, i + k, j + k, len - k);
+
+            // 交换：左对右，右对左
+            boolean swap = dfs(s1, s2, i, j + len - k, k) 
+                         && dfs(s1, s2, i + k, j, len - k);
+
+            if (noSwap || swap) {
+                return dp[i][j][len] = true;
+            }
+        }
+
+        // 都不行
+        return dp[i][j][len] = false;
+    }
+
+    // 判断两个子串字符是否完全一样（数量、种类都相同）
+    private boolean isSame(String s1, String s2, int i, int j, int len) {
+        int[] count = new int[26];
+        for (int k = 0; k < len; k++) {
+            count[s1.charAt(i + k) - 'a']++;
+            count[s2.charAt(j + k) - 'a']--;
+        }
+        for (int c : count) {
+            if (c != 0) return false;
+        }
+        return true;
+    }
+}
