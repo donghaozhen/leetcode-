@@ -1,0 +1,42 @@
+class Solution {
+    public int[] getMaxMatrix(int[][] matrix) {
+        int n = matrix.length;
+        int m = matrix[0].length;
+        int max = Integer.MIN_VALUE;
+        int a = 0, b = 0, c = 0, d = 0;
+        int[] nums = new int[m];
+
+        for (int up = 0; up < n; up++) {
+            Arrays.fill(nums, 0); // 每次换上行，清空压缩数组
+            
+            for (int down = up; down < n; down++) {
+                // 🔥 压缩：把 down 行累加到每一列
+                for (int j = 0; j < m; j++) {
+                    nums[j] += matrix[down][j]; 
+                }
+
+                // 对压缩数组求最大子数组和（记录坐标）
+                int pre = Integer.MIN_VALUE;
+                int l = 0;
+                for (int r = 0; r < m; r++) {
+                    if (pre >= 0) {
+                        pre += nums[r];
+                    } else {
+                        pre = nums[r];
+                        l = r;
+                    }
+
+                    // 更新最大答案
+                    if (pre > max) {
+                        max = pre;
+                        a = up;
+                        b = l;
+                        c = down;
+                        d = r;
+                    }
+                }
+            }
+        }
+        return new int[] {a, b, c, d};
+    }
+}
