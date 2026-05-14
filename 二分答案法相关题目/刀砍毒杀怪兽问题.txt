@@ -1,0 +1,40 @@
+// 二分答案法
+// 最优解
+// 时间复杂度O(n * log(hp))，额外空间复杂度O(1)
+public static int fast2(int[] cuts, int[] poisons, int hp) {
+    int ans = Integer.MAX_VALUE;
+   int r = hp+1;
+   int l  = 0;
+   while (l<=r){
+       int mid = l+((r-l)>>1);
+       if(f(cuts,poisons,hp,mid)){
+           ans = mid;
+           r = mid-1;
+       }else {
+           l = mid+1;
+       }
+   }
+   return ans;
+}
+​
+// cuts、posions，每一回合刀砍、毒杀的效果
+// hp：怪兽血量
+// limit：回合的限制
+public static boolean f(int []cuts,int []poisons,int hp,int limit) {
+    int n = Math.min(cuts.length, limit);
+    for (int i = 0, j = 1; i < n; i++, j++) {
+        int poison =  (limit - i-1) *  poisons[i];
+        if (cuts[i]>poison){
+            hp-=cuts[i];
+        }else{
+            hp -=poison;
+        }
+        if (hp <= 0) {
+            return true;
+        }
+    }
+    return false;
+}
+————————————————
+版权声明：本文为CSDN博主「小屿写代码」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_63523553/article/details/140001176
