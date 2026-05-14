@@ -1,0 +1,32 @@
+class Solution {
+    public long maxRunTime(int n, int[] batteries) {
+        long sum = 0; // 必须用 long！
+        for (int b : batteries) {
+            sum += b;
+        }
+
+        long l = 0;
+        long r = sum / n; // 右边界最优写法
+        long ans = 0;
+
+        while (l <= r) {
+            long mid = l + (r - l) / 2; // 安全取中
+            if (check(mid, n, batteries)) {
+                ans = mid;
+                l = mid + 1; // 想找更大的
+            } else {
+                r = mid - 1;
+            }
+        }
+        return ans;
+    }
+
+    // 核心：能否跑 mid 时间
+    public boolean check(long mid, int n, int[] batteries) {
+        long total = 0;
+        for (int b : batteries) {
+            total += Math.min(b, mid); // 每块电池最多贡献 mid
+        }
+        return total >= n * mid; // 总贡献 ≥ 需要的电量
+    }
+}
