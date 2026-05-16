@@ -1,0 +1,20 @@
+class Solution {
+    public String largestNumber(int[] nums) {
+        //大顶堆
+        PriorityQueue<String> heap = new PriorityQueue<>((a,b)->(b+a).compareTo(a+b));
+        // 把所有数字加入堆（你这里漏了循环）
+        for (int num : nums) {
+            heap.add(String.valueOf(num));
+        }
+        // 拼接结果
+        StringBuilder sb = new StringBuilder();
+        while (!heap.isEmpty()) {
+            sb.append(heap.poll());
+        }
+        // 处理 [0,0] → 输出 0
+        if (sb.charAt(0) == '0') {
+            return "0";
+        }
+        return sb.toString();
+    }
+}

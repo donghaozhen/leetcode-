@@ -1,0 +1,19 @@
+class Solution {
+    public int minMeetingRooms(int[][] intervals) {
+         按开始时间升序
+        Arrays.sort(intervals, (a,b) - a[0] - b[0]);
+         小顶堆：存结束时间
+        PriorityQueueInteger heap = new PriorityQueue();
+        int max = 0;
+        for(int[] arr  intervals){
+            int s = arr[0], e = arr[1];
+             最早结束的会议已开完，腾出房间
+            if(!heap.isEmpty() && heap.peek() = s){
+                heap.poll();
+            }
+            heap.offer(e);
+            max = Math.max(max, heap.size());
+        }
+        return max;
+    }
+}

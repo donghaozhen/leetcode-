@@ -1,0 +1,22 @@
+class Solution {
+    public int halveArray(int[] nums) {
+        PriorityQueue<Double> heap = new PriorityQueue<>((a,b)->Double.compare(b,a));
+        double sum = 0;
+        for(int x:nums){
+            heap.add((double) x);
+            sum += x;
+        }
+        double target = sum/2.0;
+        double cut = 0.0;
+        int ans = 0;
+        while(sum>target){
+            double temp = heap.poll();
+            double halfTemp = temp/2;
+            sum = sum - halfTemp;
+            heap.add(halfTemp);
+            ans++;
+        }
+        return ans;
+        
+    }
+}
