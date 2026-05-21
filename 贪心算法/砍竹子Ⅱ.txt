@@ -1,0 +1,23 @@
+class Solution {
+    public int cuttingBamboo(int bamboo_len) {
+        if(bamboo_len == 2) return 1;
+        if(bamboo_len == 3) return 2;
+        
+        int mod = 1000000007;
+        int tail = bamboo_len % 3 == 0 ? 1 : (bamboo_len % 3 == 1 ? 4 : 2);
+        int power = (tail == 1 ? bamboo_len : (bamboo_len - tail)) / 3;
+        
+        return (int)(pow(3, power, mod) * tail % mod);
+    }
+    
+    // 快速幂：a^b % mod
+    private long pow(long a, int b, int mod) {
+        long res = 1;
+        while(b > 0) {
+            if(b % 2 == 1) res = res * a % mod;
+            a = a * a % mod;
+            b /= 2;
+        }
+        return res;
+    }
+}

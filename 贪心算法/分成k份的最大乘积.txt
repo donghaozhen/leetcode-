@@ -1,0 +1,26 @@
+public class Solution {
+    // 将整数n分成k份，求最大乘积
+    public static long maxProduct(int n, int k) {
+        if (k <= 0 || k > n) return 0;
+        int avg = n / k;
+        int rem = n % k;
+        
+        long res = 1;
+        // 余数rem份：每份 avg+1
+        for (int i = 0; i < rem; i++) {
+            res *= (avg + 1);
+        }
+        // 剩余k-rem份：每份 avg
+        for (int i = 0; i < k - rem; i++) {
+            res *= avg;
+        }
+        return res;
+    }
+
+    public static void main(String[] args) {
+        // 测试示例
+        System.out.println(max(10,3));  // 10分成3份 → 3*3*4=36
+        System.out.println(max(8,2));   // 分成2份 → 4*4=16
+        System.out.println(max(7,3));   // 3+2+2 → 12
+    }
+}

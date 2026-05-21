@@ -1,0 +1,33 @@
+class Solution {
+    public int maxEvents(int[][] events) {
+        // 按会议开始时间升序排序
+        Arrays.sort(events, (a, b) -> a[0] - b[0]);
+        //离结束最近时间的会议，小顶堆
+        PriorityQueue<Integer> heap = new PriorityQueue<>();
+        //当天的时间
+        int day = 0;
+        //最后的结果
+        int ans = 0;
+        //控制会议
+        int i = 0;
+        int n = events.length;
+        while(i<n || !heap.isEmpty()){
+            //当天会议已经开始
+            while (i < n && events[i][0] == day) {
+                heap.offer(events[i][1]);
+                i++;
+            }
+            // 移除已经结束的会议
+            while (!heap.isEmpty() && heap.peek() < day) {
+                heap.poll();
+            }
+            // 参加会议
+            if(!heap.isEmpty()) {
+                heap.poll();
+                ans++;
+            }
+            day++;
+        }
+        return ans;
+    }
+}

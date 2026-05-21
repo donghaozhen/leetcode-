@@ -1,0 +1,23 @@
+class Solution {
+    public int scheduleCourse(int[][] courses) {
+        Arrays.sort(courses,(a,b)-> a[1] - b[1]);
+        //大顶堆
+        PriorityQueue<Integer> heap = new PriorityQueue<>((a,b)->b-a);
+        int day = 0;
+        for(int[] course : courses){
+            //时间够
+            if((day + course[0])<=course[1]){
+                heap.add(course[0]);
+                day += course[0];
+            }
+            //时间不够，比较更合的
+            else{
+                if(!heap.isEmpty() && heap.peek() > course[0]){
+                    day += course[0] - heap.poll();
+                    heap.add(course[0]);
+                }
+            }
+        }
+        return heap.size();
+    }
+}
