@@ -1,0 +1,34 @@
+class Solution {
+    public int findMaximizedCapital(int k, int w, int[] profits, int[] capital) {
+        //先把两个数组合并到一起
+        int[][] profitsAndCapital = new int[profits.length][2];
+        for (int i = 0; i < profits.length; i++) {
+            profitsAndCapital[i][0] = profits[i];
+            profitsAndCapital[i][1] = capital[i];
+        }
+        //按照最小资本从小到大排
+        Arrays.sort(profitsAndCapital,(a,b)->a[1]-b[1]);
+        PriorityQueue<Integer> heap = new PriorityQueue<>((a, b) -> b - a);
+        int count = 0;
+        int i = 0;
+        int ans = w;
+        while(count<k){
+            //加入资金够的
+            while(i<profits.length && ans>=profitsAndCapital[i][1]){
+                //加入利润，大的利润排在前面
+                heap.add(profitsAndCapital[i][0]);
+                i++;
+            }
+            //没有合适的
+            if(heap.isEmpty()){
+                break;    
+            }
+            if(!heap.isEmpty()){
+                //资本变多
+                ans+=heap.poll();
+                count++;
+            }
+        }
+        return ans;
+    }
+}

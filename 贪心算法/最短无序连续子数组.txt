@@ -1,0 +1,28 @@
+class Solution {
+    public int findUnsortedSubarray(int[] nums) {
+        int[][] numsAndPos = new int[nums.length][2];
+        for(int i = 0; i < nums.length; i++){
+            numsAndPos[i][0] = nums[i];
+            numsAndPos[i][1] = i; 
+        }
+
+        int left = Integer.MAX_VALUE;
+        int right = Integer.MIN_VALUE;
+
+        Arrays.sort(numsAndPos, (a,b)->a[0] - b[0]);
+
+        PriorityQueue<Integer> heap = new PriorityQueue<>((a, b) -> b - a);
+
+        for(int[] a : numsAndPos){
+            // 核心逻辑不变
+            while(!heap.isEmpty() && a[1] < heap.peek()){
+                left = Math.min(left, a[1]);
+                right = Math.max(right, heap.poll());
+            }
+            heap.add(a[1]);
+        }
+
+        if(left == Integer.MAX_VALUE) return 0;
+        return right - left + 1;
+    }
+}

@@ -1,0 +1,49 @@
+class Solution {
+    class Node {
+        int v, i, idx;
+        public Node(int v, int i, int idx) {
+            this.v = v;
+            this.i = i;
+            this.idx = idx;
+        }
+    }
+
+    public int[] smallestRange(List<List<Integer>> nums) {
+        // 有序表（从小到大排序）
+        TreeSet<Node> set = new TreeSet<>(
+            (a,b) -> a.v != b.v ? a.v - b.v : a.i - b.i
+        );
+
+        int k = nums.size();
+        // 初始化：每个列表放第一个元素
+        for (int i = 0; i < k; i++) {
+            set.add(new Node(nums.get(i).get(0), i, 0));
+        }
+
+        int minLen = Integer.MAX_VALUE;
+        int[] res = new int[2];
+
+        while (set.size() == k) {
+            // 最小 = 有序表第一个
+            Node min = set.first();
+            // 最大 = 有序表最后一个
+            Node max = set.last();
+
+            // 更新最小区间
+            if (max.v - min.v < minLen) {
+                minLen = max.v - min.v;
+                res[0] = min.v;
+                res[1] = max.v;
+            }
+
+            // 删掉最小值，把它所在列表的下一个元素加进来
+            set.remove(min);
+            int i = min.i;
+            int idx = min.idx;
+            if (idx + 1 < nums.get(i).size()) {
+                set.add(new Node(nums.get(i).get(idx+1), i, idx+1));
+            }
+        }
+        return res;
+    }
+}

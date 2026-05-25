@@ -1,0 +1,29 @@
+class Solution {
+    public int minimumDeviation(int[] nums) {
+        TreeSet<Integer> set = new TreeSet<>();
+        
+        // 所有数先变成最大
+        for (int num : nums) {
+            if (num % 2 == 1) set.add(num * 2);
+            else set.add(num);
+        }
+
+        int minDev = set.last() - set.first();
+
+        while (true) {
+            int min = set.first();
+            int max = set.last();
+
+            minDev = Math.min(minDev, max - min);
+
+            // 最大值是奇数，不能再小 → 结束
+            if (max % 2 == 1) break;
+
+            // 只缩小最大值
+            set.pollLast();
+            set.add(max / 2);
+        }
+
+        return minDev;
+    }
+}
