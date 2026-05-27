@@ -1,0 +1,38 @@
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[][] p = new int[n][2];
+
+        for (int i = 0; i < n; i++) {
+            p[i][0] = sc.nextInt(); // A
+            p[i][1] = sc.nextInt(); // B
+        }
+
+        Arrays.sort(p, (a, b) -> {
+            long d1 = Math.abs(a[0] - a[1]);
+            long d2 = Math.abs(b[0] - b[1]);
+            return Long.compare(d1, d2);
+        });
+
+        long max = 0;
+        int maxA = p[0][0];
+        int maxB = p[0][1];
+
+        for (int i = 1; i < n; i++) {
+            int nowA = p[i][0];
+            int nowB = p[i][1];
+
+            long val1 = Math.min(maxA + nowA, maxB + nowB);
+            long val2 = max;
+            max = Math.max(val1, val2);
+
+            maxA = Math.max(maxA, nowA);
+            maxB = Math.max(maxB, nowB);
+        }
+
+        System.out.printf("%.1f\n", max / 2.0);
+    }
+}
