@@ -1,0 +1,40 @@
+class Solution {
+    public boolean canConvert(String str1, String str2) {
+        // 情况1：如果两个字符串已经相同，无需转化
+        if (str1.equals(str2)) {
+            return true;
+        }
+
+        // 记录 str1 -> str2 的字符映射关系
+        Map<Character, Character> mappings = new HashMap<>();
+        
+        for (int i = 0; i < str1.length(); i++) {
+            char c1 = str1.charAt(i);
+            char c2 = str2.charAt(i);
+            
+            // 检查映射是否一致
+            if (mappings.containsKey(c1)) {
+                if (mappings.get(c1) != c2) {
+                    return false; // 一对多映射，失败
+                }
+            } else {
+                mappings.put(c1, c2);
+            }
+        }
+        
+        // 情况2：检查 str2 的字符集大小
+        // 如果 str2 包含所有26个字母，且前面已经判断 str1 != str2，则无法转化
+        Set<Character> uniqueCharsInStr2 = new HashSet<>();
+        for (char c : str2.toCharArray()) {
+            uniqueCharsInStr2.add(c);
+        }
+        
+        // 核心判断：如果 str2 用满了26个字母，则返回 false
+        if (uniqueCharsInStr2.size() == 26) {
+            return false;
+        }
+        
+        // 其他所有情况都可以成功转化
+        return true;
+    }
+}

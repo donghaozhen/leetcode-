@@ -1,0 +1,38 @@
+class Solution {
+    public String largestPalindromic(String num) {
+        char[] charArray = num.toCharArray();
+
+        int[] count = new int[10]; 
+
+        for (char a : charArray) {
+            int digit = a - '0'; 
+            count[digit]++;
+        }
+
+        StringBuilder left = new StringBuilder();
+        for(int i = 9;i>=0;i--){
+            if(left.length()==0 && i==0){
+                continue;
+            }
+            for(int m = 0;m<count[i]/2;m++){
+                left.append(i);
+            }
+        }  
+        int middle = -1;
+        for(int i = 9;i>=0;i--){
+            if(count[i]%2==1){
+                middle = i;
+                break;
+            }
+        }  
+        StringBuilder result = new StringBuilder();
+        result.append(left);
+        if(middle!=-1){
+            result.append(middle);
+        }
+        result.append(left.reverse());
+
+        return result.length() == 0 ? "0" : result.toString();
+
+    }
+}
