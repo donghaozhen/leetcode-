@@ -1,0 +1,35 @@
+class Solution {
+    public double maxAverageRatio(int[][] classes, int extraStudents) {
+        PriorityQueue<int[]> heap = new PriorityQueue<>((a,b)->{
+            double gainA = getGain(a);
+            double gainB = getGain(b);
+            return Double.compare(gainB, gainA);  // 降序
+        });
+
+        for(int[] classe : classes){
+            heap.add(classe);
+        }
+        while (extraStudents > 0) {
+            int[] temp = heap.poll();
+            temp[0] +=1;
+            temp[1] +=1;
+            heap.add(temp);
+            extraStudents--;
+        }
+        
+        // 计算最终的平均通过率
+        double total = 0.0;
+        for (int i = 0; i < classes.length; i++) {
+            total += (double) classes[i][0] / classes[i][1];
+        }
+        return total / classes.length;
+    }
+
+    // 计算添加一个学生带来的增益
+    private double getGain(int[] c) {
+        double current = (double) c[0] / c[1];
+        double next = (double) (c[0] + 1) / (c[1] + 1);
+        return next - current;
+    }
+
+}
