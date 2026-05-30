@@ -1,0 +1,28 @@
+class Solution {
+    public int findTargetSumWays(int[] nums, int target) {
+        int n = nums.length;
+        int sum = 0;
+        for(int num : nums){
+            sum += num;
+        }
+        int offset = sum;
+        if (Math.abs(target) > sum) return 0;       
+        int[][] dp = new int[n + 1][2 * sum + 1];
+        dp[0][0+offset] = 1;
+        for(int i = 1;i<=n;i++){
+            for(int j = -sum;j<=sum;j++){
+                int idx = j + offset;
+                int num = nums[i - 1];
+                // 选负号：从 j + num 转移来
+                if (j + num <= sum) {
+                    dp[i][idx] += dp[i - 1][(j + num) + offset];
+                }
+                // 选正号：从 j - num 转移来
+                if (j - num >= -sum) {
+                    dp[i][idx] += dp[i - 1][(j - num) + offset];
+                }
+            }
+        }
+         return dp[n][target + offset];
+    }
+}
