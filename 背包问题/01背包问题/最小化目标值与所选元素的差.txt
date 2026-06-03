@@ -1,0 +1,46 @@
+class Solution {
+    public int minimizeTheDifference(int[][] mat, int target) {
+        int m = mat.length;
+        
+        // 计算最大可能和（每行最大值之和）
+        int maxSum = 0;
+        for (int[] row : mat) {
+            int rowMax = 0;
+            for (int num : row) {
+                rowMax = Math.max(rowMax, num);
+            }
+            maxSum += rowMax;
+        }
+        
+        // dp[i][sum] = 前 i+1 行能否凑出和 sum
+        boolean[][] dp = new boolean[m][maxSum + 1];
+        
+        // 初始化第一行
+        for (int num : mat[0]) {
+            dp[0][num] = true;
+        }
+        
+        // 处理剩余行
+        for (int i = 1; i < m; i++) {
+            for (int sum = 0; sum <= maxSum; sum++) {
+                if (dp[i - 1][sum]) {
+                    for (int num : mat[i]) {
+                        int newSum = sum + num;
+                        if (newSum <= maxSum) {
+                            dp[i][newSum] = true;
+                        }
+                    }
+                }
+            }
+        }
+        
+        // 找最接近 target 的和
+        int ans = Integer.MAX_VALUE;
+        for (int sum = 0; sum <= maxSum; sum++) {
+            if (dp[m - 1][sum]) {
+                ans = Math.min(ans, Math.abs(sum - target));
+            }
+        }
+        return ans;
+    }
+}

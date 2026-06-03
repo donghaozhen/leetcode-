@@ -1,0 +1,30 @@
+class Solution {
+    public int maxValueOfCoins(List<List<Integer>> piles, int k) {
+        int n = piles.size();
+        int[][] dp = new int[n + 1][k + 1];
+        
+        for (int i = 1; i <= n; i++) {
+            List<Integer> pile = piles.get(i - 1);
+            int size = pile.size();
+            
+            // 计算前缀和：preSum[m] = 前 m 个硬币的总价值
+            int[] preSum = new int[size + 1];
+            for (int m = 1; m <= size; m++) {
+                preSum[m] = preSum[m - 1] + pile.get(m - 1);
+            }
+            
+            for (int j = 0; j <= k; j++) {
+                // 不取当前组的任何硬币
+                dp[i][j] = dp[i - 1][j];
+                
+                // 取当前组的 m 个硬币（m 从 1 到 min(size, j)）
+                for (int m = 1; m <= Math.min(size, j); m++) {
+                    dp[i][j] = Math.max(dp[i][j], 
+                                        dp[i - 1][j - m] + preSum[m]);
+                }
+            }
+        }
+        
+        return dp[n][k];
+    }
+}

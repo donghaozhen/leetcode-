@@ -1,0 +1,57 @@
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        
+        int N = sc.nextInt();
+        int H = sc.nextInt();
+        
+        int[] P = new int[N];
+        int[] C = new int[N];
+        for (int i = 0; i < N; i++) {
+            P[i] = sc.nextInt();
+            C[i] = sc.nextInt();
+        }
+        
+        sc.close();
+        
+        Solution sol = new Solution();
+        System.out.println(sol.minCostToBuyHay(N, H, P, C));
+    }
+}
+
+class Solution {
+    public int minCostToBuyHay(int N, int H, int[] P, int[] C) {
+        int maxW = H + 5000;
+        int[][] dp = new int[N + 1][maxW + 1];
+        
+        // 初始化
+        for (int i = 0; i <= N; i++) {
+            Arrays.fill(dp[i], Integer.MAX_VALUE / 2);
+        }
+        dp[0][0] = 0;
+        
+        // 完全背包
+        for (int i = 1; i <= N; i++) {
+            int w = P[i - 1];
+            int v = C[i - 1];
+            for (int j = 0; j <= maxW; j++) {
+                // 不选第 i 种
+                dp[i][j] = dp[i - 1][j];
+                // 选第 i 种（完全背包，用 dp[i][j-w]）
+                if (j >= w) {
+                    dp[i][j] = Math.min(dp[i][j], dp[i][j - w] + v);
+                }
+            }
+        }
+        
+        // 找至少 H 磅的最小花费
+        int ans = Integer.MAX_VALUE / 2;
+        for (int j = H; j <= maxW; j++) {
+            ans = Math.min(ans, dp[N][j]);
+        }
+        return ans;
+    }
+}
