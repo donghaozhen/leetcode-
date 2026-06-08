@@ -1,0 +1,51 @@
+class Solution {
+    public int balancedString(String s) {
+        int n = s.length();
+        int nums = n / 4;
+        int[] map = new int[128];
+        map['Q'] = 0;
+        map['W'] = 1;
+        map['E'] = 2;
+        map['R'] = 3;
+        
+        int[] cnt = new int[4];
+        for (char c : s.toCharArray()) {
+            cnt[map[c]]++;
+        }
+        
+        int sumDebt = 0;
+        int[] debts = new int[4];
+        for (int i = 0; i < 4; i++) {
+            debts[i] = Math.max(0, cnt[i] - nums);
+            sumDebt += debts[i];
+        }
+        
+        if (sumDebt == 0) return 0;
+        
+        int[] window = new int[4];
+        int ans = Integer.MAX_VALUE;
+        
+        for (int l = 0, r = 0; r < n; r++) {
+            int idx = map[s.charAt(r)];
+            window[idx]++;
+            
+            if (window[idx] <= debts[idx]) {
+                sumDebt--;
+            }
+            
+            while (sumDebt == 0) {
+                ans = Math.min(ans, r - l + 1);
+                
+                int leftIdx = map[s.charAt(l)];
+                window[leftIdx]--;
+                
+                if (window[leftIdx] < debts[leftIdx]) {
+                    sumDebt++;
+                }
+                l++;
+            }
+        }
+        
+        return ans;
+    }
+}

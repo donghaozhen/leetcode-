@@ -1,0 +1,33 @@
+class Solution {
+    public String minWindow(String s, String t) {
+        int[] need = new int[128];
+        int[] window = new int[128];
+        for (char c : t.toCharArray()) need[c]++;
+
+        int left = 0, right = 0, valid = 0;
+        int start = 0, minLen = Integer.MAX_VALUE;
+        int count = 0; // t 中不同字符数量
+        for (int num : need) if (num > 0) count++;
+
+        while (right < s.length()) {
+            char c = s.charAt(right++);
+            if (need[c] > 0) {
+                window[c]++;
+                if (window[c] == need[c]) valid++;
+            }
+
+            while (valid == count) {
+                if (right - left < minLen) {
+                    minLen = right - left;
+                    start = left;
+                }
+                char d = s.charAt(left++);
+                if (need[d] > 0) {
+                    if (window[d] == need[d]) valid--;
+                    window[d]--;
+                }
+            }
+        }
+        return minLen == Integer.MAX_VALUE ? "" : s.substring(start, start + minLen);
+    }
+}
