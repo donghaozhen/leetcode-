@@ -1,0 +1,40 @@
+class Solution {
+    public int numSubmat(int[][] mat) {
+        int m = mat.length;
+        int n = mat[0].length;
+        int[] height = new int[n];
+        int ans = 0;
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (mat[i][j] == 1) {
+                    height[j]++;
+                } else {
+                    height[j] = 0;
+                }
+            }
+            ans += calc(height);
+        }
+        return ans;
+    }
+
+    private int calc(int[] height) {
+        int n = height.length;
+        int[] stack = new int[n + 1];
+        int top = 0;
+        int total = 0;
+
+        for (int i = 0; i <= n; i++) {
+            int h = (i == n) ? 0 : height[i];
+            while (top > 0 && height[stack[top - 1]] > h) {
+                int idx = stack[--top];
+                int high = height[idx];
+                int l = top == 0 ? -1 : stack[top - 1];
+                int r = i;
+                total += high * (idx - l) * (r - idx);
+            }
+            stack[top++] = i;
+        }
+        return total;
+    }
+}
