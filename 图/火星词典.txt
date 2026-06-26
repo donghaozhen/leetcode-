@@ -1,0 +1,63 @@
+class Solution {
+    public String alienOrder(String[] words) {
+        int[][] graph = new int[26][26];
+        HashMap<Character, Integer> inDegree = new HashMap<>();
+        int n = words.length;
+
+        for (String word : words) {
+            for (char ch : word.toCharArray()) {
+                inDegree.put(ch, 0);
+            }
+        }
+
+        for (int i = 1; i < n; i++) {
+            String w1 = words[i - 1];
+            String w2 = words[i];
+            int minLen = Math.min(w1.length(), w2.length());
+            int j = 0;
+            for (; j < minLen; j++) {
+                char c1 = w1.charAt(j);
+                char c2 = w2.charAt(j);
+                if (c1 != c2) {
+                    int u = c1 - 'a';
+                    int v = c2 - 'a';
+                    if (graph[u][v] == 0) {
+                        graph[u][v] = 1;
+                        inDegree.put(c2, inDegree.get(c2) + 1);
+                    }
+                    break; 
+                }
+            }
+            if (j == minLen && w1.length() > w2.length()) {
+                return "";
+            }
+        }
+
+        char[] queue = new char[26];
+        int h = 0, t = 0;
+
+        for (char ch : inDegree.keySet()) {
+            if (inDegree.get(ch) == 0) {
+                queue[t++] = ch;
+            }
+        }
+
+        while (h < t) {
+            char cur = queue[h++];
+            for (int i = 0; i < 26; i++) {
+                if (graph[cur - 'a'][i] == 1) {
+                    char nextCh = (char) (i + 'a');
+                    inDegree.put(nextCh, inDegree.get(nextCh) - 1);
+                    if (inDegree.get(nextCh) == 0) {
+                        queue[t++] = nextCh;
+                    }
+                }
+            }
+        }
+
+        if (t != inDegree.size()) {
+            return "";
+        }
+        return new String(queue, 0, t);
+    }
+}
