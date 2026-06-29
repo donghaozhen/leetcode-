@@ -1,0 +1,55 @@
+class Solution {
+    public int[] movesToStamp(String stamp, String target) {
+        int n = target.length();
+        int m = stamp.length();
+        int[] indegree = new int[n-m+1];
+        boolean[] visited = new boolean[n];
+        ArrayList<ArrayList<Integer>> graph = new ArrayList<>();
+        for(int i=0;i<n;i++){
+            graph.add(new ArrayList<>());
+        }
+        for(int i=0;i<n-m+1;i++){
+            for(int j=0;j<m;j++){
+                if(target.charAt(i+j)!=stamp.charAt(j)){
+                    indegree[i]++;
+                    graph.get(i+j).add(i);
+                }
+            }
+        }
+        int[] queue = new int[n-m+1];
+        int h=0,t=0;
+        int size=0;
+        for(int i=0;i<n-m+1;i++){
+            if(indegree[i]==0){
+                queue[t++] = i;
+                size++;
+            }
+        }
+
+        while(h<t){
+            int temp = queue[h++];
+            for(int i=temp;i<temp+m;i++){
+                if(visited[i]==false){
+                    visited[i] = true;
+                    for(int a: graph.get(i)){
+                        indegree[a]--;
+                        if(indegree[a]==0){
+                            queue[t++] = a;
+                            size++;
+                        }
+                    }
+                }
+            }
+        }
+        if(size!=indegree.length){
+            return new int[0];
+        }
+        
+        int[] ans = new int[queue.length];
+        for (int i = 0; i < ans.length; i++) {
+            ans[i] = queue[queue.length-1-i];
+        }
+        return ans;
+
+    }
+}

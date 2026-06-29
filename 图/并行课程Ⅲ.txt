@@ -1,0 +1,48 @@
+class Solution {
+    public int minimumTime(int n, int[][] relations, int[] time) {
+        int m = relations.length;
+        ArrayList<ArrayList<Integer>> graph = new ArrayList<>();
+        //1...n代表每个点的编号
+        for(int i=0;i<=n;i++){
+            graph.add(new ArrayList<>());
+        }
+        //存放点的入度
+        int[] indegree = new int[n+1];
+        //遍历边
+        for(int i=0;i<m;i++){
+            int from = relations[i][0];
+            int to = relations[i][1];
+            graph.get(from).add(to);
+            indegree[to]++;
+        }
+        //队列
+        int[] queue = new int[n]; int t=0,h=0;
+        //每个点的结果
+        int[] ans = new int[n+1];
+        //最终结果
+        int res=0;
+        for(int c : time){
+            res=Math.max(res,c);
+        }
+        for(int i=1;i<=n;i++){
+            ans[i] = time[i-1];
+        }
+        for(int i=1;i<=n;i++){
+            if(indegree[i]==0){
+                queue[t++] = i;
+            }
+        }
+        while(h<t){
+            int temp = queue[h++];
+            for(int a : graph.get(temp)){
+                ans[a] = Math.max(ans[a],time[a-1] + ans[temp]);
+                res = Math.max(ans[a],res);
+                indegree[a]--;
+                if(indegree[a]==0){
+                     queue[t++] = a;
+                }
+            }
+        }
+        return res;
+    }
+}

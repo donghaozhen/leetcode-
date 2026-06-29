@@ -1,0 +1,83 @@
+class Solution {
+    static class UnionFind {
+        int[] father;
+        int[] size;
+        int[] stack;
+        public UnionFind(int n) {
+            father = new int[n];
+            size = new int[n];
+            stack = new int[n];
+            for (int i = 0; i < n; i++) {
+                father[i] = i;
+                size[i] = 1;
+            }
+        }
+        int find(int x) {
+            int top = 0;
+            // 收集路径上所有节点
+            while (father[x] != x) {
+                stack[top++] = x;
+                x = father[x];
+            }
+            // 全部指向根，路径压缩
+            while (top > 0) {
+                father[stack[--top]] = x;
+            }
+            return x;
+        }
+        boolean union(int x, int y) {
+            int fx = find(x);
+            int fy = find(y);
+            if (fx == fy) return false;
+            // 按大小合并，小树挂大树
+            if (size[fx] > size[fy]) {
+                father[fy] = fx;
+                size[fx] += size[fy];
+            } else {
+                father[fx] = fy;
+                size[fy] += size[fx];
+            }
+            return true;
+        }
+    }
+    public int minimumEffortPath(int[][] heights) {
+        int n = heights.length;
+        int m = heights[0].length;
+        int totalPoints = n * m;
+        int maxEdge = totalPoints * 2;
+        int[][] edges = new int[maxEdge][3];
+        int idx = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                int cur = i * m + j;
+                // 向右
+                if (j + 1 < m) {
+                    int diff = Math.abs(heights[i][j] - heights[i][j+1]);
+                    int right = i * m + (j + 1);
+                    edges[idx++] = new int[]{cur, right, diff};
+                }
+                // 向下
+                if (i + 1 < n) {
+                    int diff = Math.abs(heights[i][j] - heights[i+1][j]);
+                    int down = (i + 1) * m + j;
+                    edges[idx++] = new int[]{cur, down, diff};
+                }
+            }
+        }
+        // 按差值升序
+        Arrays.sort(edges, (a, b) -> a[2] - b[2]);
+        UnionFind uf = new UnionFind(totalPoints);
+        int start = 0;
+        int end = (n - 1) * m + (m - 1);
+
+        for (int[] e : edges) {
+            int u = e[0], v = e[1], w = e[2];
+            uf.union(u, v);
+            // 起点终点连通，当前w就是最小瓶颈
+            if (uf.find(start) == uf.find(end)) {
+                return w;
+            }
+        }
+        return 0;
+    }
+}

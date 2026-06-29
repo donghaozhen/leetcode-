@@ -1,0 +1,41 @@
+class Solution {
+    public int[] loudAndRich(int[][] richer, int[] quiet) {
+        int n = quiet.length;
+        List<List<Integer>> graph = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            graph.add(new ArrayList<>());
+        }
+        int[] indegree = new int[n];
+        int[] ans = new int[n];
+        for(int i=0;i<n;i++) ans[i]=i;
+        int[] queue = new int[n]; int h=0,t=0;
+
+            for(int[] temp : richer){
+                int from = temp[0];
+                int to = temp[1];
+                graph.get(from).add(to);
+                indegree[to]++;
+            }
+        
+        for(int i=0;i<n;i++){
+            if(indegree[i]==0){
+                queue[t++] = i;
+            }
+        }
+        while(h<t){
+            int temp = queue[h++];
+            for(int a : graph.get(temp)){
+                indegree[a]--;
+                // 更新逻辑
+                int bestIdx = ans[temp];
+                if(quiet[bestIdx] < quiet[ans[a]]){
+                    ans[a] = bestIdx;
+                }
+                if(indegree[a]==0){
+                    queue[t++] = a;
+                }
+            }
+        }
+        return ans;
+    }
+}

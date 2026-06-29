@@ -1,0 +1,73 @@
+class Solution {
+    class UnionFind {
+        int[] parent;
+        int[] size;
+        int[] stack;
+        int t=0;
+        public UnionFind(int s) {
+            parent = new int[s];
+            size = new int[s];
+            stack = new int[s];
+            for(int i=0;i<s;i++){
+                parent[i] = i;
+                size[i] = 1;
+            }
+        }
+        int find(int x) {
+            t=0;
+            while(parent[x]!=x){
+                stack[t++] = x;
+                x = parent[x];
+            }
+            while(t>0){
+                parent[stack[--t]] = x;
+            }
+            return x;
+        }
+        void union(int x, int y) {
+            int a =find(x);
+            int b =find(y);
+            int asize = size[x];
+            int bsize = size[y];
+            if(asize>bsize){
+                parent[b] = a;
+                size[a] += size[b];
+            }
+            else{
+                parent[a] = b;
+                size[b] += size[a];
+            }
+        }
+    }
+
+    public int minCostConnectPoints(int[][] points) {
+        int n = points.length;
+        // 总边数量 n*(n-1)/2
+        int edgeNum = n * (n - 1) / 2;
+        int[][] edges = new int[edgeNum][3];
+        int idx = 0;
+        // 生成所有边 [权值,u,v]
+        for (int i = 0; i < n; i++) {
+            int x1 = points[i][0], y1 = points[i][1];
+            for (int j = i + 1; j < n; j++) {
+                int x2 = points[j][0], y2 = points[j][1];
+                int w = Math.abs(x1 - x2) + Math.abs(y1 - y2);
+                edges[idx++] = new int[]{i, j,w};
+            }
+        }
+        Arrays.sort(edges,(a,b)->(a[2]-b[2]));
+        UnionFind uf = new UnionFind(n);
+        int res = 0, nums = 0;
+        for(int i=0;i<edges.length;i++){
+            if(uf.find(edges[i][0]) != uf.find(edges[i][1])){
+                res += edges[i][2];
+                nums++;
+                uf.union(edges[i][0],edges[i][1]);
+            }
+            if(nums==edges.length-1){
+                return res;
+            }
+        }
+        return res;
+    }
+}
