@@ -1,0 +1,80 @@
+class Solution {
+    public int minStickers(String[] stickers, String target) {
+        // 排序目标字符串
+        target = sort(target);
+        
+        // 构建图：每个字符 -> 包含该字符的贴纸（去重）
+        List<List<String>> graph = new ArrayList<>();
+        for (int i = 0; i < 26; i++) {
+            graph.add(new ArrayList<>());
+        }
+        
+        Set<String> stickerSet = new HashSet<>();
+        for (String str : stickers) {
+            String sorted = sort(str);
+            if (stickerSet.add(sorted)) {
+                for (int i = 0; i < sorted.length(); i++) {
+                    if (i == 0 || sorted.charAt(i) != sorted.charAt(i - 1)) {
+                        graph.get(sorted.charAt(i) - 'a').add(sorted);
+                    }
+                }
+            }
+        }
+        
+        // BFS
+        Queue<String> queue = new LinkedList<>();
+        Set<String> visited = new HashSet<>();
+        queue.offer(target);
+        visited.add(target);
+        
+        int level = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int k = 0; k < size; k++) {
+                String cur = queue.poll();
+                if (cur.isEmpty()) return level;
+                
+                char firstChar = cur.charAt(0);
+                for (String sticker : graph.get(firstChar - 'a')) {
+                    String next = next(cur, sticker);
+                    if (next.isEmpty()) return level + 1;
+                    if (!visited.contains(next)) {
+                        visited.add(next);
+                        queue.offer(next);
+                    }
+                }
+            }
+            level++;
+        }
+        return -1;
+    }
+    
+    public String sort(String str) {
+        char[] chars = str.toCharArray();
+        Arrays.sort(chars);
+        return String.valueOf(chars);
+    }
+    
+    public String next(String t, String s) {
+
+        StringBuilder sb = new StringBuilder();
+        for(int i=0,j=0;i<t.length();){
+            if(j==s.length()){
+                sb.append(t.charAt(i++));
+            }
+            else{
+                if(t.charAt(i)<s.charAt(j)){
+                    sb.append(t.charAt(i++));
+                }
+                else if(t.charAt(i)>s.charAt(j)){
+                    j++;
+                }
+                else{
+                    i++;
+                    j++;
+                }
+            }
+        }
+        return sb.toString();
+    }
+}

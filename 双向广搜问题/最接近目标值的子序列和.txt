@@ -1,0 +1,39 @@
+class Solution {
+    public int minAbsDifference(int[] nums, int goal) {
+        int n = nums.length;
+        int mid = n/2;
+        int leftLen = mid;
+        int rightLen = n - mid;
+        long[] leftSum = new long[1 << leftLen];
+        long[] rightSum = new long[1 << rightLen];
+        int leftCnt = f(0, mid - 1, 0, goal, nums, leftSum, 0);
+        int rightCnt = f(mid, n - 1, 0, goal, nums, rightSum, 0);
+        Arrays.sort(leftSum, 0, leftCnt);
+        Arrays.sort(rightSum, 0, rightCnt);
+
+        long total = 0;
+        int i = 0;
+        int j = rightCnt - 1;
+        int ans = Integer.MAX_VALUE;
+
+        while (i < leftCnt && j >= 0) {
+            long sum = leftSum[i] + rightSum[j];
+            ans = Math.min(ans, (int)Math.abs(goal - sum));
+            if (sum > goal) {
+                j--;
+            } else {
+                i++;
+            }
+        }
+        return ans;
+    }
+    public static int f(int left, int right, long s, long w, int[] arr, long[] ans, int j) {
+        if (left > right) {
+            ans[j++] = s;
+        } else {
+            j = f(left + 1, right, s, w, arr, ans, j);
+            j = f(left + 1, right, s + arr[left], w, arr, ans, j);
+        }
+        return j;
+    }
+}

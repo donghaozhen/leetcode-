@@ -1,0 +1,44 @@
+class Solution {
+    public int minimumEffortPath(int[][] heights) {
+        int[][] move = new int[][]{{0,1},{0,-1},{1,0},{-1,0}}; 
+        int m = heights.length;
+        int n = heights[0].length;
+        List<List<int[]>> graph = new ArrayList<>();
+        for(int i=0;i<m*n;i++){
+            graph.add(new ArrayList<>());
+        }
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                for(int k=0;k<4;k++){
+                    int cx = i + move[k][0];
+                    int cy = j + move[k][1];
+                    if(cx >=0 && cx<m && cy>=0 && cy<n){
+                        graph.get(i*n+j).add(new int[]{cx*n+cy,Math.abs(heights[i][j]-heights[cx][cy])});
+                    }
+                }
+            }
+        }
+        int[] distance = new int[m*n];
+        boolean[] visited = new boolean[m*n];
+        Arrays.fill(distance,Integer.MAX_VALUE);
+        distance[0] = 0;
+        PriorityQueue<int[]> heap = new PriorityQueue<>((a,b)->a[1]-b[1]);
+        heap.add(new int[]{0,0});
+        while(!heap.isEmpty()){
+            int u = heap.poll()[0];
+            if(visited[u]==false){
+                visited[u] = true;
+                for(int[] temp : graph.get(u)){
+                    int h = temp[0];
+                    int v = temp[1];
+                    int newMax = Math.max(distance[u], temp[1]);
+                    if(newMax < distance[h]){
+                        distance[h] = newMax;
+                        heap.add(new int[]{h, newMax});
+                    }
+                }
+            }
+        }
+        return distance[m*n-1];
+    }
+}

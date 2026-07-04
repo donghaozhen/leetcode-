@@ -1,0 +1,58 @@
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        long w = sc.nextLong();
+
+        long[] v = new long[n];
+        for (int i = 0; i < n; i++) {
+            v[i] = sc.nextLong();
+        }
+        long ans = solve(n, w, v);
+        System.out.println(ans);
+        sc.close();
+    }
+
+    public static long solve(int n, long limit, long[] arr) {
+        int mid = n / 2;
+        int leftLen = mid;
+        int rightLen = n - mid;
+
+        long[] leftSum = new long[1 << leftLen];
+        long[] rightSum = new long[1 << rightLen];
+
+        int leftCnt = f(0, mid - 1, 0, limit, arr, leftSum, 0);
+        int rightCnt = f(mid, n - 1, 0, limit, arr, rightSum, 0);
+
+        Arrays.sort(leftSum, 0, leftCnt);
+        Arrays.sort(rightSum, 0, rightCnt);
+
+        long total = 0;
+        int l = 0;
+        int r = rightCnt - 1;
+        while (l < leftCnt && r >= 0) {
+            if (leftSum[l] + rightSum[r] <= limit) {
+                total += r + 1;
+                l++;
+            } else {
+                r--;
+            }
+        }
+        return total;
+    }
+
+    public static int f(int left, int right, long s, long w, long[] arr, long[] ans, int j) {
+        if (s > w) {
+            return j;
+        }
+        if (left > right) {
+            ans[j++] = s;
+        } else {
+            j = f(left + 1, right, s, w, arr, ans, j);
+            j = f(left + 1, right, s + arr[left], w, arr, ans, j);
+        }
+        return j;
+    }
+}
