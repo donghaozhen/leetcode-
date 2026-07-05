@@ -1,0 +1,61 @@
+class Solution {
+    public int shortestPathAllKeys(String[] grid) {
+        int[][] move = new int[][]{{0,1},{0,-1},{1,0},{-1,0}};
+        int n = grid.length;
+        int m = grid[0].length();
+        char[][] graph = new char[n][m];
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                graph[i][j] = grid[i].charAt(j);
+            }
+        }
+        Queue<int[]> queue = new LinkedList<>();
+        boolean[][][] visited = new boolean[n][m][1<<6]; 
+        int key=0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(graph[i][j] >='a' && graph[i][j] <='f'){
+                    key |= 1 << graph[i][j] - 'a';
+                }
+                if(graph[i][j]=='@'){
+                    queue.offer(new int[]{i,j,0});
+                    visited[i][j][0] = true;
+                }
+            }
+        }
+        int level = 1;
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            while(size-->0){
+                int[] temp = queue.poll();
+                int x = temp[0];
+                int y = temp[1];
+                int v = temp[2];
+                for(int k=0;k<4;k++){
+                    int ux = x + move[k][0];
+                    int uy = y + move[k][1];
+                    if(ux>=0 && uy>=0 && ux<n && uy<m){
+                        int c = v;
+                        if(graph[ux][uy]=='#') continue;
+                        if(graph[ux][uy] >='A' && graph[ux][uy] <='F'){
+                            int mask = 1 << (graph[ux][uy] - 'A');
+                            if((v & mask) == 0) continue;
+                        }
+                        if(graph[ux][uy] >='a' && graph[ux][uy] <='f'){
+                            c = c | (1 << graph[ux][uy] - 'a');
+                        }
+                        if(c==key){
+                            return level;
+                        }
+                        if(!visited[ux][uy][c]){
+                            queue.offer(new int[]{ux,uy,c});
+                            visited[ux][uy][c] = true;
+                        }
+                    }
+                } 
+            }
+            level++;
+        }
+        return -1;
+    }
+}

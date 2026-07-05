@@ -1,0 +1,50 @@
+class Solution {
+    public int electricCarPlan(int[][] paths, int cnt, int start, int end, int[] charge) {
+        List<List<int[]>> graph = new ArrayList<>();
+        int n = charge.length;
+        for(int i=0;i<n;i++){
+            graph.add(new ArrayList<>());
+        }
+        for (int[] p : paths) {
+            int u = p[0], v = p[1], w = p[2];
+            graph.get(u).add(new int[]{v, w});
+            graph.get(v).add(new int[]{u, w});
+        }
+        PriorityQueue<int[]> heap = new PriorityQueue<>((a,b)->a[2]-b[2]);
+        boolean[][] visited = new boolean[n][cnt+1];
+        int[][] distance = new int[n][cnt + 1];
+        for (int i = 0; i < distance.length; i++) {
+            Arrays.fill(distance[i], Integer.MAX_VALUE); 
+        }
+        distance[start][0] = 0; 
+        heap.add(new int[]{start,0,0});
+        while(!heap.isEmpty()){
+            int[] cur = heap.poll();
+            int pos = cur[0];
+            int energy = cur[1];
+            int cost = cur[2];
+            if(visited[pos][energy]) continue;
+            visited[pos][energy] = true;
+            if(pos==end){
+                return cost;
+            }
+            int newEnergy = energy;
+            int newCost = cost;
+            while(newEnergy<cnt){
+                newEnergy+=1;
+                newCost = newCost + charge[pos];
+                if(!visited[pos][newEnergy] && distance[pos][newEnergy] > newCost){
+                    distance[pos][newEnergy] = newCost;
+                    heap.add(new int[]{pos,newEnergy,distance[pos][newEnergy]});
+                }
+            }
+            for(int[] temp : graph.get(pos)){
+                if(energy>=temp[1] && !visited[temp[0]][energy-temp[1]]  && distance[temp[0]][energy-temp[1]] > cost + temp[1]){
+                    distance[temp[0]][energy-temp[1]] = cost + temp[1];
+                    heap.add(new int[]{temp[0],energy-temp[1], distance[temp[0]][energy-temp[1]]});
+                }
+            }
+        }
+        return -1; 
+    }
+}
