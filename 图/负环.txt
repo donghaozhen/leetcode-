@@ -1,0 +1,64 @@
+import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int T = sc.nextInt();
+        while (T-- > 0) {
+            int n = sc.nextInt();
+            int m = sc.nextInt();
+            List<List<int[]>> graph = new ArrayList<>();
+            for (int i = 0; i <= n; i++) {
+                graph.add(new ArrayList<>());
+            }
+            for (int i = 0; i < m; i++) {
+                int u = sc.nextInt();
+                int v = sc.nextInt();
+                int w = sc.nextInt();
+                graph.get(u).add(new int[]{v, w});
+                if (w >= 0) {
+                    graph.get(v).add(new int[]{u, w});
+                }
+            }
+            boolean hasCycle = spfa(n, graph);
+            System.out.println(hasCycle ? "YES" : "NO");
+        }
+        sc.close();
+    }
+
+    // 返回true代表存在1可达负环
+    static boolean spfa(int n, List<List<int[]>> graph) {
+        int INF = 0x3f3f3f3f;
+        int[] distance = new int[n + 1];
+        Arrays.fill(distance, INF);
+        int[] updateCnt = new int[n + 1];
+        boolean[] enter = new boolean[n + 1];
+        Queue<Integer> q = new LinkedList<>();
+
+        distance[1] = 0;
+        q.add(1);
+        enter[1] = true;
+        updateCnt[1] = 1;
+
+        while (!q.isEmpty()) {
+            int u = q.poll();
+            enter[u] = false;
+            for (int[] temp : graph.get(u)) {
+                int v = temp[0];
+                int w = temp[1];
+                if (distance[u] != INF && distance[v] > distance[u] + w) {
+                    distance[v] = distance[u] + w;
+                    if (!enter[v]) {
+                        q.add(v);
+                        enter[v] = true;
+                        updateCnt[v]++;
+                        // 入队次数>=n，存在负环
+                        if (updateCnt[v] >= n) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+}

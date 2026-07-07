@@ -1,0 +1,42 @@
+class Solution {
+    public int findTheCity(int n, int[][] edges, int distanceThreshold) {
+        int INF = 0x3f3f3f3f;
+        // 初始化距离矩阵
+        int[][] distance = new int[n][n];
+        for(int i = 0; i < n; i++){
+            Arrays.fill(distance[i], INF);
+            distance[i][i] = 0;
+        }
+        // 填充双向边
+        for(int[] e : edges){
+            int u = e[0], v = e[1], w = e[2];
+            distance[u][v] = w;
+            distance[v][u] = w;
+        }
+        for(int bridge = 0;bridge<n;bridge++){
+            for(int i = 0;i<n;i++){
+                for(int j = 0;j<n;j++){
+                    if(distance[i][bridge]!=INF && distance[bridge][j]!=INF
+                    && distance[i][j]>distance[i][bridge]+distance[bridge][j]){
+                        distance[i][j] = distance[i][bridge]+distance[bridge][j];
+                    }
+                }
+            }
+        }
+        int ans = INF;
+        int idAns = -1;
+        for(int i = 0; i < n; i++){
+            int sum = 0;
+            for(int j = 0;j<n;j++){
+                if(distance[i][j]<=distanceThreshold){
+                    sum++;
+                }
+            }
+            if(sum<=ans){
+                ans = sum;
+                idAns = i; 
+            }
+        }
+        return idAns;
+    }
+}
