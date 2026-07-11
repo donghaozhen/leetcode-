@@ -1,0 +1,48 @@
+import java.util.*;
+class Solution {
+    int MOD = 1000000007;
+    public int countSubMultisets(List<Integer> nums, int l, int r) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        long zeroCnt = 0;
+        for (int num : nums) {
+            if(num == 0) {
+                zeroCnt++;
+            } else {
+                map.put(num, map.getOrDefault(num, 0) + 1);
+            }
+        }
+        int ans = 0;
+        int n = map.size();
+        List<Map.Entry<Integer, Integer>> list = new ArrayList<>(map.entrySet());
+        int m = r;
+        long[][] dp = new long[n+1][m+1];
+        dp[0][0] = 1;
+        int[] queue = new int[m+1];
+
+        for(int i=1;i<=n;i++){
+            Map.Entry<Integer, Integer> cur = list.get(i-1);
+            int w = cur.getKey();
+            int cnt = cur.getValue();
+            for(int mod=0; mod < w; mod++){
+                int h = 0, t = 0;
+                long sum = 0;
+                for(int j = mod; j <= m; j += w){
+                    queue[t++] = j;
+                    sum = (sum + dp[i-1][j]) % MOD;
+                    int ban = j - cnt * w;
+                    while(h < t && queue[h] < ban){
+                        sum = (sum - dp[i-1][queue[h]] + MOD) % MOD;
+                        h++;
+                    }
+                    dp[i][j] = sum;
+                }
+            }
+        }
+        long zeroMul = zeroCnt + 1;
+        for(int i=l;i<=r;i++){
+            long total = (dp[n][i] * zeroMul) % MOD;
+            ans = (int)((ans + total) % MOD);
+        }
+        return ans;
+    }
+}

@@ -1,0 +1,25 @@
+class Solution {
+    static final int MOD = 1000000007;
+    public int waysToReachTarget(int target, int[][] types) {
+        int[] dp = new int[n+1][t+1];
+        for(int i=1;i<=n;i++){
+            for(int mod = 0;mod<=Math.max(t,w[i]-1);mod++{
+                l = r =0;
+                for(int j=mod;j<=t;j+=w[i]){
+                    while(l<r && value(dp,i,queue[r-1])<=value(dp,i,j)){
+                        r--;
+                    }
+                    queue[r++] = j;
+                    if(queue[l]==j-w[i]*(c[i]+1)){
+                        l++:
+                    }
+                    dp[i][j] = value(dp,i,queue[l])+j/w[i] * v[i];
+                }
+            }
+        }
+        return dp[n][t];
+    }
+    public static int value(int[][] dp,int i,int j){
+        return dp[i-1][j] - j/w[i] * v[i];
+    }
+}
