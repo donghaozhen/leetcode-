@@ -1,0 +1,63 @@
+import java.util.Arrays;
+
+class Solution {
+    char[] chs;
+    // memo[l][r][0/1] 区间l~r得到0/1的方案数
+    Long[][][] memo;
+
+    public int countEval(String s, int result) {
+        chs = s.toCharArray();
+        int n = chs.length;
+        memo = new Long[n][n][2];
+        for (Long[][] arr : memo)
+            for (Long[] row : arr)
+                Arrays.fill(row, -1L);
+        long ans = dfs(0, n - 1, result);
+        return (int) ans;
+    }
+
+    // 计算区间[l,r]得到target的方案总数
+    long dfs(int l, int r, int target) {
+        if (memo[l][r][target] != -1)
+            return memo[l][r][target];
+
+        // 区间只有一个数字
+        if (l == r) {
+            long cnt = (chs[l] - '0' == target) ? 1 : 0;
+            memo[l][r][target] = cnt;
+            return cnt;
+        }
+
+        long total = 0;
+        // 枚举所有运算符分割点 k
+        for (int k = l + 1; k < r; k += 2) {
+            char op = chs[k];
+            long l0 = dfs(l, k - 1, 0);
+            long l1 = dfs(l, k - 1, 1);
+            long r0 = dfs(k + 1, r, 0);
+            long r1 = dfs(k + 1, r, 1);
+
+            if (op == '&') {
+                if (target == 1) {
+                    total += l1 * r1;
+                } else {
+                    total += l0 * r0 + l0 * r1 + l1 * r0;
+                }
+            } else if (op == '|') {
+                if (target == 1) {
+                    total += l0 * r1 + l1 * r0 + l1 * r1;
+                } else {
+                    total += l0 * r0;
+                }
+            } else if (op == '^') {
+                if (target == 1) {
+                    total += l0 * r1 + l1 * r0;
+                } else {
+                    total += l0 * r0 + l1 * r1;
+                }
+            }
+        }
+        memo[l][r][target] = total;
+        return total;
+    }
+}

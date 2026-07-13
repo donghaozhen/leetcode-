@@ -1,0 +1,48 @@
+import java.util.Arrays;
+
+class Solution {
+    int MOD = 1_000_000_007;
+    char[] ch;
+    int[][] memo;
+
+    public int countPalindromicSubsequences(String s) {
+        ch = s.toCharArray();
+        int n = ch.length;
+        memo = new int[n][n];
+        for (int[] row : memo) Arrays.fill(row, -1);
+        return f1(0, n - 1);
+    }
+
+    int f1(int l, int r) {
+        if (l > r) return 0;
+        if (l == r) return memo[l][r] = 1;
+        if (memo[l][r] != -1) return memo[l][r];
+
+        long res = 0;
+        if (ch[l] != ch[r]) {
+            // 两端不同，容斥去重
+            res = (long) f1(l + 1, r) + f1(l, r - 1) - f1(l + 1, r - 1);
+        } else {
+            // 两端相同，找内部同字符位置
+            int left = l + 1;
+            int right = r - 1;
+            while (left <= right && ch[left] != ch[l]) left++;
+            while (left <= right && ch[right] != ch[l]) right--;
+
+            if (left > right) {
+                // 中间无相同
+                res = 2L * f1(l + 1, r - 1) + 2;
+            } else if (left == right) {
+                // 中间一个相同
+                res = 2L * f1(l + 1, r - 1) + 1;
+            } else {
+                // 中间至少两个相同，减去重复部分
+                res = 2L * f1(l + 1, r - 1) - f1(left + 1, right - 1);
+            }
+        }
+        // 处理负数取模
+        res %= MOD;
+        if (res < 0) res += MOD;
+        return memo[l][r] = (int) res;
+    }
+}

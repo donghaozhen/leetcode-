@@ -1,0 +1,27 @@
+class Solution {
+    public int minInsertions(String s) {
+        char[] chars = s.toCharArray();
+        int n = chars.length;
+        int[][] dp = new int[n][n];
+        for(int[] a : dp){
+            Arrays.fill(a,-1);
+        }
+        return f1(chars,0,n-1,dp);
+    }
+    public int f1(char[] chars,int l,int r,int[][] dp){
+        if(dp[l][r]!=-1){
+            return dp[l][r];
+        }
+        if(l>=r){
+            dp[l][r] = 0;
+            return 0;
+        }
+        if(chars[l]==chars[r]){
+            return dp[l][r] = f1(chars,l+1,r-1,dp);
+        }
+        else{
+            return dp[l][r] = Math.min(f1(chars,l,r-1,dp),f1(chars,l+1,r,dp))+1;
+        }
+    }
+
+}

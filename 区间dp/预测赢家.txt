@@ -1,0 +1,26 @@
+class Solution {
+    public boolean predictTheWinner(int[] nums) {
+        int sum = 0;
+        for(int num : nums){
+            sum += num;
+        }
+        int sum1 = f(nums,0,nums.length-1);
+        if(sum1>=sum-sum1){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    public int f(int[] nums,int l, int r){
+        if(l==r){
+            return nums[l];
+        }
+        if(l+1==r){
+            return Math.max(nums[l],nums[r]);
+        }
+        int a = nums[l] + Math.min(f(nums,l+1,r-1),f(nums,l+2,r));
+        int b = nums[r] + Math.min(f(nums,l,r-2),f(nums,l+1,r-1));
+        return Math.max(a,b);
+    }
+}

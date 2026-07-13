@@ -1,0 +1,30 @@
+import java.util.Arrays;
+class Solution {
+    int[] arr;
+    int[][] memo;
+
+    public int maxCoins(int[] nums) {
+        int n = nums.length;
+        // 左右补1消除边界判断
+        arr = new int[n + 2];
+        arr[0] = arr[n + 1] = 1;
+        System.arraycopy(nums, 0, arr, 1, n);
+        memo = new int[n + 2][n + 2];
+        // -1表示未计算
+        for (int[] row : memo) Arrays.fill(row, -1);
+        return dfs(0, n + 1);
+    }
+
+    // dfs(i,j)：开区间(i,j)，戳完中间所有气球的最大金币
+    int dfs(int i, int j) {
+        if (memo[i][j] != -1) return memo[i][j];
+        int res = 0;
+        // k为区间最后一个戳的气球
+        for (int k = i + 1; k < j; k++) {
+            int cur = arr[i] * arr[k] * arr[j] + dfs(i, k) + dfs(k, j);
+            res = Math.max(res, cur);
+        }
+        memo[i][j] = res;
+        return res;
+    }
+}
