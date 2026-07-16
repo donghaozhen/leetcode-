@@ -1,0 +1,54 @@
+class Solution {
+    public static class Info{
+        int nodeCnt;    
+        int camCnt;     
+        boolean hasCam; 
+        boolean covered;
+        public Info(int nodeCnt,int camCnt,boolean hasCam,boolean covered){
+            this.nodeCnt = nodeCnt;
+            this.camCnt = camCnt;
+            this.hasCam = hasCam;
+            this.covered = covered;
+        }
+    }
+
+    public int minCameraCover(TreeNode root) {
+        Info rootInfo = f1(root);
+        if(!rootInfo.covered){
+            return rootInfo.camCnt + 1;
+        }
+        return rootInfo.camCnt;
+    }
+
+    public Info f1(TreeNode node){
+        if(node == null){
+            return new Info(0, 0, false, true);
+        }
+        Info infol = f1(node.left);
+        Info infor = f1(node.right);
+        int totalNode = infol.nodeCnt + infor.nodeCnt + 1;
+        boolean curHasCam;
+        boolean curCovered;
+        int curCam;
+
+        // 分类1：左未覆盖 或 右未覆盖 → 当前必须装摄像头
+        if(!infol.covered || !infor.covered){
+            curHasCam = true;
+            curCovered = true;
+            curCam = infol.camCnt + infor.camCnt + 1;
+        }
+        // 分类2：左右都覆盖，且至少一侧有摄像头 → 当前不装、被覆盖
+        else if(infol.hasCam || infor.hasCam){
+            curHasCam = false;
+            curCovered = true;
+            curCam = infol.camCnt + infor.camCnt;
+        }
+        // 分类3：左右都覆盖、且都无摄像头 → 当前不装、未覆盖，等父节点
+        else{
+            curHasCam = false;
+            curCovered = false;
+            curCam = infol.camCnt + infor.camCnt;
+        }
+        return new Info(totalNode, curCam, curHasCam, curCovered);
+    }
+}

@@ -1,0 +1,39 @@
+class Solution {
+    private int globalMax = 0;
+
+    public static class Info{
+        public int max;
+        public int min;
+        public boolean isBet;
+        public int sum;
+        public Info(int a,int b,boolean c,int d){
+            max = a;
+            min = b;
+            isBet = c;
+            sum = d;
+        }
+    }
+    public int maxSumBST(TreeNode root) {
+        f1(root);
+        return globalMax;
+    }
+    public Info f1(TreeNode tree){
+        if(tree == null){
+            return new Info(Integer.MIN_VALUE,Integer.MAX_VALUE,true,0);
+        }
+        Info infol = f1(tree.left);
+        Info infor = f1(tree.right);
+        int max = Math.max(tree.val,Math.max(infol.max,infor.max));
+        int min = Math.min(tree.val,Math.min(infol.min,infor.min));
+        boolean isBet = infol.isBet && infor.isBet && infol.max<tree.val && tree.val<infor.min;
+        int sum;
+        if(isBet){
+            sum = infol.sum + infor.sum + tree.val;
+            globalMax = Math.max(globalMax, sum);
+        }else{
+            sum = Math.max(infol.sum,infor.sum);
+            globalMax = Math.max(globalMax, sum);
+        }
+        return new Info(max,min,isBet,sum);
+    }
+}

@@ -1,0 +1,47 @@
+class Solution {
+    int brige;
+    public boolean canPartitionKSubsets(int[] nums, int k) {
+        int n = nums.length;
+        int sum = 0;
+        for(int i=0;i<n;i++){
+            sum += nums[i];
+        }
+        if(sum%k!=0){
+            return false;
+        }
+        brige = sum/k;
+        int[] dp = new int[1<<n];
+        Arrays.fill(dp,-1);
+        return f(n,(1<<n)-1,0,0,k,dp,nums);
+    }
+    public boolean f(int n,int status,int i,int asum,int rest,int[] dp,int[] matchsticks){
+        if(rest==0){
+            return true;
+        }
+        if(asum>brige){
+            return false;
+        }
+        if(dp[status] != -1){
+            return dp[status] == 1;
+        }
+        boolean ans = false;
+        for(int j=0;j<n;j++){
+            int newStatus = status ^ (1<<j);
+            int newAsum = asum + matchsticks[j];
+            int newRest = rest;
+            if(newAsum == brige){
+                newRest--;
+                newAsum = 0;
+            }
+            if((status & (1<<j))!=0 && f(n,newStatus,j,newAsum,newRest,dp,matchsticks)){
+                ans = true;
+                break;
+            }
+        }
+        dp[status] = ans ? 1 : 0;
+        return ans;
+    }
+}
+
+
+

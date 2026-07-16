@@ -1,0 +1,45 @@
+class Solution {
+    public int brige;
+    public boolean makesquare(int[] matchsticks) {
+        int sum = 0;
+        int n = matchsticks.length;
+        for(int i=0;i<n;i++){
+            sum += matchsticks[i];
+        }
+        if(sum%4!=0){
+            return false;
+        }
+        brige = sum/4;
+        int[] dp = new int[1<<n];
+        Arrays.fill(dp,-1);
+        return f(n,(1<<n)-1,0,0,4,dp,matchsticks);
+    }
+
+    public boolean f(int n,int status,int i,int asum,int rest,int[] dp,int[] matchsticks){
+        if(rest==0){
+            return true;
+        }
+        if(asum>brige){
+            return false;
+        }
+        if(dp[status] != -1){
+            return dp[status] == 1;
+        }
+        boolean ans = false;
+        for(int j=0;j<n;j++){
+            int newStatus = status ^ (1<<j);
+            int newAsum = asum + matchsticks[j];
+            int newRest = rest;
+            if(newAsum == brige){
+                newRest--;
+                newAsum = 0;
+            }
+            if((status & (1<<j))!=0 && f(n,newStatus,j,newAsum,newRest,dp,matchsticks)){
+                ans = true;
+                break;
+            }
+        }
+        dp[status] = ans ? 1 : 0;
+        return ans;
+    }
+}

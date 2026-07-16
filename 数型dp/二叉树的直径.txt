@@ -1,0 +1,17 @@
+class Solution {
+    private int line;
+    public int diameterOfBinaryTree(TreeNode root) {
+        f1(root);
+        return line;
+    }
+    public int f1(TreeNode tree){
+        if(tree == null){
+            return 0;
+        }
+        int infol = f1(tree.left);
+        int infor = f1(tree.right);
+        int height = Math.max(infol,infor);
+        line = Math.max(line,infol+infor);
+        return height+1;
+    }
+}

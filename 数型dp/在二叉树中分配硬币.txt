@@ -1,0 +1,26 @@
+class Solution {
+    public static class Info{
+        int cnt;
+        int coin;
+        int move;
+        public Info(int a,int b,int c){
+            cnt = a;
+            coin = b;
+            move = c;
+        }
+    }
+    public int distributeCoins(TreeNode root) {
+        return f1(root).move;
+    }
+    public Info f1(TreeNode root){
+       if(root==null){
+            return new Info(0,0,0);
+        }
+        Info infol = f1(root.left);
+        Info infor = f1(root.right);
+        int cnt = infol.cnt + infor.cnt+1;
+        int coin = infol.coin + infor.coin + root.val;
+        int move = Math.abs(infol.cnt - infol.coin) + Math.abs(infor.cnt - infor.coin)+infol.move + infor.move;
+        return new Info(cnt,coin,move);
+    }
+}
